@@ -5,10 +5,9 @@ int main ()
 {
 	void *ptr = mlx_init();
 	void *win = mlx_new_window(ptr, 1200, 1200, "test");
-	int i = 600;
-	while(i--)
-		mlx_pixel_put(ptr, win, i, 40, 0XFFFFFFFF);
 	mlx_loop(ptr);
-	
+
+	mlx_destroy_window(ptr,win);
+	mlx_destroy_display(ptr);
 	return 0;
 }
