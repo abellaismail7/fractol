@@ -1,5 +1,5 @@
 CC 		= gcc
-CCFLAGS = -Wall -Werror -Wextra -lX11 -lXext
+CCFLAGS = -Wall -Werror -Wextra -lX11 -lXext -lm
 INCLUDE = -I./inc
 
 FILES 	= main
