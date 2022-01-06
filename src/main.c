@@ -1,29 +1,36 @@
 #include <math.h>
 #include "mlx.h"
+#include "fractol.h"
+#include <stdio.h>
+#include <stdlib.h>
 
-typedef struct s_point {
-	int x;
-	int y;
-} t_point;
+int close(t_vars *vars)
+{
+	mlx_destroy_window(vars->mlx,vars->win);
+	exit(0);
+}
 
 int main ()
 {
-	void *ptr = mlx_init();
-	void *win = mlx_new_window(ptr, 1200, 1200, "test");
-	double i = 0;
-	while(i < 200)
-	{
-		double a = sin(i)  * 100; // take 2 digits after \. .
-		if (i * 50 > 1200) // break at edge
-			break;
-		// 50 for tjbida
-		// 300 from top
-		mlx_pixel_put(ptr, win, i * 190, a + 300, 0XFFFFFFFF);
-		i += 0.1; // increase details
-	}
-	mlx_loop(ptr);
+	t_vars vars;
 
-	mlx_destroy_window(ptr,win);
-	mlx_destroy_display(ptr);
+	vars.width = 1200;
+	vars.height = 1200;
+	vars.iters = 80;
+	vars.zoom = 2;
+	vars.zx = 0;
+	vars.zy = 0;
+
+	vars.mlx = mlx_init();
+	vars.win = mlx_new_window(vars.mlx, vars.height, vars.width, "test");
+	mlx_mouse_hook(vars.win, mouse_event, &vars);
+	mlx_hook(vars.win, 6, 1, motion_event, &vars);
+	mlx_key_hook(vars.win, keyevent, &vars);
+	mlx_hook(vars.win, 12, 1, redraw, &vars);
+	mlx_hook(vars.win, 13, 1, redraw, &vars);
+	mlx_hook(vars.win, 17, 0, close, &vars);
+	mlx_loop(vars.mlx);
+
+	//mlx_destroy_display(mlx);
 	return 0;
 }
