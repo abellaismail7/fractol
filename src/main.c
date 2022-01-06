@@ -14,12 +14,13 @@ int main ()
 {
 	t_vars vars;
 
-	vars.width = 1200;
-	vars.height = 1200;
-	vars.iters = 80;
-	vars.zoom = 2;
-	vars.zx = 0;
-	vars.zy = 0;
+	vars.width = 1500;
+	vars.height = 1500;
+	vars.iters = 100;
+	vars.minval = -2;
+	vars.maxval = 2;
+	vars.zx = vars.width / 2;
+	vars.zy = vars.height / 2;
 
 	vars.mlx = mlx_init();
 	vars.win = mlx_new_window(vars.mlx, vars.height, vars.width, "test");

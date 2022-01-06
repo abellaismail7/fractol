@@ -6,7 +6,7 @@
 /*   By: iait-bel <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/06 18:52:05 by iait-bel          #+#    #+#             */
-/*   Updated: 2022/01/06 18:52:05 by iait-bel         ###   ########.fr       */
+/*   Updated: 2022/01/06 23:10:55 by bella            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ void draw_infos(t_vars *vars)
 	
 	sprintf(str, "number of iterations: %d\n", vars->iters);
 	mlx_string_put(vars->mlx, vars->win, 20, 20, 0XFFFFFFFF ,str);
-	sprintf(str, "zoom: %f\n", vars->zoom);
+	sprintf(str, "zoom: %f\n", vars->minval);
 	mlx_string_put(vars->mlx, vars->win, 320, 20, 0XFFFFFFFF ,str);
 }
 
@@ -44,15 +44,14 @@ int redraw( t_vars *vars)
 	data.addr = mlx_get_data_addr(data.img, &data.bits_per_pixel, &data.line_length,
 		&data.endian);
 
-
 	i = 0;
 	while(i < vars->height)
 	{
 		j = 0;
 		while(j < vars->width)
 		{
-			double a = map(i + vars->zx - vars->height/2, 0, vars->height, vars->zoom * -1, vars->zoom) ;
-			double b = map(j + vars->zy - vars->width/2, 0, vars->width, vars->zoom * -1, vars->zoom)  ;
+			double a = map(i , 0, vars->height, vars->minval, vars->maxval);
+			double b = map(j , 0, vars->width, vars->minval, vars->maxval);
 
 			double ca = a;
 			double cb = b;
@@ -61,21 +60,20 @@ int redraw( t_vars *vars)
 
 			while (n < vars->iters)
 			{
-				// a^2 - b^2 - 2ab
 				double aa = a;	
-				
+
 				a = a*a - b*b + ca;
 				b = 2*aa*b + cb;
-
-				if (a + b > 16)
+				if (a * a + b * b > 16)
 					break;
 				n++;
 			}
-			int color = (int) map (n, 0, 100, 0XFFFF, 0XFFFFFF) & ~0XFFFF;
+
+			int color = 30 + round(120 * n * 1.0/ vars->iters);
+		
+			color = hslToRgb((double)color/100, 1,.5);
 			if (n == vars->iters)
-			{
 				color = 0;
-			}
 			my_mlx_pixel_put(&data, i, j, color);
 			j++;
 		}
