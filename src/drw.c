@@ -30,28 +30,44 @@ void draw_infos(t_vars *vars)
 	
 	sprintf(str, "number of iterations: %d\n", vars->iters);
 	mlx_string_put(vars->mlx, vars->win, 20, 20, 0XFFFFFFFF ,str);
-	sprintf(str, "zoom: %f\n", vars->minval);
+	sprintf(str, "zoom: %f\n", vars->zoom);
 	mlx_string_put(vars->mlx, vars->win, 320, 20, 0XFFFFFFFF ,str);
+	sprintf(str, "c");
+	mlx_string_put(vars->mlx, vars->win, vars->height / 2, vars->width / 2, 0XFFFFFFFF ,str);
+}
+
+double calc_center(double height, double coordinate)
+{
+
+	if(coordinate < height / 2)
+	{
+		
+	}
+	return height;
 }
 
 int redraw( t_vars *vars)
 {
 	t_data data;
-	int i;
-	int j;
+	int x;
+	int y;
 
 	data.img = mlx_new_image(vars->mlx, vars->height, vars->width);
 	data.addr = mlx_get_data_addr(data.img, &data.bits_per_pixel, &data.line_length,
 		&data.endian);
 
-	i = 0;
-	while(i < vars->height)
+	x = 0;
+	double range = 2/(vars->zoom * 1.35);
+	while(x < vars->height)
 	{
-		j = 0;
-		while(j < vars->width)
+		y = 0;
+		while(y < vars->width)
 		{
-			double a = map(i , 0, vars->height, vars->minval, vars->maxval);
-			double b = map(j , 0, vars->width, vars->minval, vars->maxval);
+			double _x = x + map(vars->zx, 0, vars->width , 0 , vars->width / range );
+			double _y = y + map(vars->zy, 0, vars->height, 0 , vars->width / range );
+			double a = map(_x , 0, vars->height * vars->zoom, -range, range);
+			double b = map(_y , 0, vars->width  * vars->zoom, -range, range);
+	
 
 			double ca = a;
 			double cb = b;
@@ -64,7 +80,7 @@ int redraw( t_vars *vars)
 
 				a = a*a - b*b + ca;
 				b = 2*aa*b + cb;
-				if (a * a + b * b > 16)
+				if (a * a + b * b > 4)
 					break;
 				n++;
 			}
@@ -72,12 +88,13 @@ int redraw( t_vars *vars)
 			int color = 30 + round(120 * n * 1.0/ vars->iters);
 		
 			color = hslToRgb((double)color/100, 1,.5);
+			//int color = (int) map(n, 0 , vars->iters, 0XFFFF + 1,0XFFFFFF) + 0XFFFFF  & ~0XFFFF ;
 			if (n == vars->iters)
 				color = 0;
-			my_mlx_pixel_put(&data, i, j, color);
-			j++;
+			my_mlx_pixel_put(&data, x, y, color);
+			y++;
 		}
-		i++;
+		x++;
 	}
 
 	mlx_put_image_to_window(vars->mlx, vars->win, data.img, 0, 0);

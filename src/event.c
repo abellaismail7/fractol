@@ -7,17 +7,15 @@ int keyevent(int key, t_vars *vars)
 {
 	printf("key pressed: %d", key);
 	fflush(stdout);
-	if (key == 105)
+	if (key == 34)
 	{
-		vars->maxval += .1;
-		vars->minval -= .1;
+		vars->zoom += vars->zoom * .01;
 		mlx_clear_window(vars->mlx, vars->win);
 		redraw(vars);
 	}
-	if (key == 111)
+	if (key == 31)
 	{
-		vars->minval += .1;
-		vars->maxval -= .1;
+		vars->zoom -= vars->zoom * .1;
 		//if (vars->iters > 50)
 		//	vars->iters -= 10;
 		mlx_clear_window(vars->mlx, vars->win);
@@ -37,6 +35,7 @@ int mouse_event(int button,int x, int y, t_vars *vars)
 	{
 		vars->zx = x;
 		vars->zy = y;
+		vars->zoom += vars->zoom * .05;
 		redraw(vars);
 	}
 	return 0;

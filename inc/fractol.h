@@ -18,8 +18,8 @@ typedef struct	s_vars {
 	void	*win;
 	int		height;
 	int		width;
-	double minval;
-	double maxval;
+	double  oldw;
+	double 	zoom;
 	int 	iters;
 	int zx;
 	int zy;

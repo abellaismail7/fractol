@@ -1,23 +1,33 @@
 CC 		= gcc
-CCFLAGS = -Wall -Werror -Wextra -lX11 -lXext -lm
-INCLUDE = -I./inc
+INCLUDE = -I./inc -I/usr/local/include/
 
-FILES 	= main
+CCFLAGS = -Wall -Werror -Wextra
+ECFLAGS = $(CCFLAGS)
+UNAME_S := $(shell uname -s)
+ifeq ($(UNAME_S),Linux)
+	ECFLAGS +=  -lX11 -lXext
+endif
+ifeq ($(UNAME_S),Darwin)
+	ECFLAGS +=  -framework OpenGL -framework AppKit
+endif
+ECFLAGS += -lm -lmlx
+
+FILES 	= main event drw map colors
 S_DIR	= src
 B_DIR	= build
 SRC		= $(addprefix $(S_DIR)/, 	$(FILES:=.c))
 OBJ		= $(addprefix $(B_DIR)/, 	$(FILES:=.o))
-MLX 	= mlx.a
 EXE 	= fractol
 
 all: $(EXE) 
 
-$(EXE): $(OBJ) $(MLX)
-	$(CC) $(CCFLAGS) $(MLX) $^ -o $@
+$(EXE): $(OBJ)
+	$(CC) $(OBJ) -o $@ $(ECFLAGS)
+
 
 $(B_DIR)/%.o: $(S_DIR)/%.c
 	mkdir -p $(@D)
-	$(CC) $(CCFLAGS) $(INCLUDE) -o $@ -c $<
+	$(CC) $(CCFLAGS) -I mlx $(INCLUDE) -o $@ -c $<
 
 debug: CCFLAGS += -g
 debug: fclean all
