@@ -25,7 +25,7 @@ $(EXE): $(OBJ)
 	$(CC) $(OBJ) -o $@ $(ECFLAGS)
 
 
-$(B_DIR)/%.o: $(S_DIR)/%.c
+$(B_DIR)/%.o: $(S_DIR)/%.c inc/fractol.h
 	mkdir -p $(@D)
 	$(CC) $(CCFLAGS) -I mlx $(INCLUDE) -o $@ -c $<
 

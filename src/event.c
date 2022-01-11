@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   event.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: iait-bel <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/01/11 17:37:30 by iait-bel          #+#    #+#             */
+/*   Updated: 2022/01/11 17:37:30 by iait-bel         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "fractol.h"
 #include <stdio.h>
 #include <mlx.h>
@@ -5,13 +17,21 @@
 
 int keyevent(int key, t_vars *vars)
 {
-	printf("key pressed: %d", key);
-	fflush(stdout);
+	//printf("key pressed: %d", key);
+	//fflush(stdout);
+	if (key == 123)
+		vars->ox -= 5;
+	if (key ==  124)
+		vars->ox += 5;
+	if (key ==  125)
+		vars->oy += 5;
+	if (key ==  126)
+		vars->oy -= 5;
+
 	if (key == 34)
 	{
-		vars->zoom += vars->zoom * .01;
+		vars->zoom += vars->zoom * .1;
 		mlx_clear_window(vars->mlx, vars->win);
-		redraw(vars);
 	}
 	if (key == 31)
 	{
@@ -19,13 +39,13 @@ int keyevent(int key, t_vars *vars)
 		//if (vars->iters > 50)
 		//	vars->iters -= 10;
 		mlx_clear_window(vars->mlx, vars->win);
-		redraw(vars);
 	}
 	if (key  == 12 || key == 53)
 	{
 		mlx_destroy_window(vars->mlx,vars->win);
 		exit(0);
 	}
+	redraw(vars);
 	return 1;
 }
 
@@ -33,11 +53,11 @@ int mouse_event(int button,int x, int y, t_vars *vars)
 {
 	if (button == 1)
 	{
-		vars->zx = x;
-		vars->zy = y;
-		vars->zoom += vars->zoom * .05;
-		redraw(vars);
+		vars->ox = x;
+		vars->oy = y;
+		vars->zoom += vars->zoom * .01;
 	}
+	redraw(vars);
 	return 0;
 	//if (button == 5)
 	//{
@@ -61,8 +81,12 @@ int mouse_event(int button,int x, int y, t_vars *vars)
 	return (1);
 }
 
-int motion_event(int x)
+int motion_event(int x, int y, t_vars *vars)
 {
-x++;
+	if (vars->julia)
+	{
+		vars->julia->x = x;
+		vars->julia->y = y;
+	}
 	return 1;
 }

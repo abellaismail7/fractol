@@ -34,16 +34,12 @@ void draw_infos(t_vars *vars)
 	mlx_string_put(vars->mlx, vars->win, 320, 20, 0XFFFFFFFF ,str);
 	sprintf(str, "c");
 	mlx_string_put(vars->mlx, vars->win, vars->height / 2, vars->width / 2, 0XFFFFFFFF ,str);
-}
-
-double calc_center(double height, double coordinate)
-{
-
-	if(coordinate < height / 2)
-	{
-		
-	}
-	return height;
+	sprintf(str, "c1");
+	mlx_string_put(vars->mlx, vars->win, vars->ox,vars->oy, 0XFFFFFFFF ,str);
+	sprintf(str, "x:%d", vars->ox);
+	mlx_string_put(vars->mlx, vars->win, 20 , 450, 0XFFFFFFFF ,str);
+	sprintf(str, "y:%d", vars->oy);
+	mlx_string_put(vars->mlx, vars->win, 220 , 450, 0XFFFFFFFF ,str);
 }
 
 int redraw( t_vars *vars)
@@ -57,23 +53,24 @@ int redraw( t_vars *vars)
 		&data.endian);
 
 	x = 0;
-	double range = 2/(vars->zoom * 1.35);
+	double range = 1/(vars->zoom);
+	double _x = map(vars->ox, 0, vars->width, 0, vars->width * vars->zoom)  * 0;
+	double _y = map(vars->oy, 0, vars->width, 0, vars->width * vars->zoom)  * 0;
 	while(x < vars->height)
 	{
 		y = 0;
 		while(y < vars->width)
 		{
-			double _x = x + map(vars->zx, 0, vars->width , 0 , vars->width / range );
-			double _y = y + map(vars->zy, 0, vars->height, 0 , vars->width / range );
-			double a = map(_x , 0, vars->height * vars->zoom, -range, range);
-			double b = map(_y , 0, vars->width  * vars->zoom, -range, range);
-	
-
+			double a = map(x + _x , 0, vars->height * vars->zoom, -range, range);
+			double b = map(y + _y , 0, vars->width  * vars->zoom, -range, range);
 			double ca = a;
 			double cb = b;
-
+			if (vars->julia)
+			{
+				ca = map(vars->julia->x, 0, vars->width, -1, 1);
+				cb = map(vars->julia->y, 0, vars->width, -1, 1);
+			}
 			int n = 0;
-
 			while (n < vars->iters)
 			{
 				double aa = a;	
@@ -87,7 +84,7 @@ int redraw( t_vars *vars)
 
 			int color = 30 + round(120 * n * 1.0/ vars->iters);
 		
-			color = hslToRgb((double)color/100, 1,.5);
+			color = hslToRgb((double)color/100, 0.8,.5);
 			//int color = (int) map(n, 0 , vars->iters, 0XFFFF + 1,0XFFFFFF) + 0XFFFFF  & ~0XFFFF ;
 			if (n == vars->iters)
 				color = 0;
@@ -98,7 +95,7 @@ int redraw( t_vars *vars)
 	}
 
 	mlx_put_image_to_window(vars->mlx, vars->win, data.img, 0, 0);
-	draw_infos(vars);
+	draw_infos(vars );
 	return 1;
 }
 

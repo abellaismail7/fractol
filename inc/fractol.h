@@ -13,16 +13,23 @@
 #ifndef FRACTOL_H
 # define FRACTOL_H
 
+typedef struct s_coor
+{
+	int x;
+	int y;
+} t_coor;
+
 typedef struct	s_vars {
 	void	*mlx;
 	void	*win;
 	int		height;
 	int		width;
-	double  oldw;
 	double 	zoom;
 	int 	iters;
-	int zx;
-	int zy;
+	t_coor * julia;
+	int ox;
+	int oy;
+	
 }				t_vars;
 
 typedef struct	s_data {
@@ -37,7 +44,7 @@ int redraw( t_vars *vars);
 int keyevent(int key, t_vars *vars);
 int mouse_event(int button,int x, int y, t_vars *data);
 double map (double n, double f1, double t1, double f2, double t2);
-int motion_event(int x);
+int motion_event(int x, int y, t_vars *vars);
 int hslToRgb(double h, double s, double l);
 
 #endif
