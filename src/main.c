@@ -21,7 +21,6 @@ int destroy_win(t_vars *vars)
 	exit(0);
 }
 
-
 int event_loop(int n)
 {
 	t_vars vars;
@@ -30,8 +29,8 @@ int event_loop(int n)
 	vars.height = 500;
 	vars.iters 	= 200;
 	vars.zoom = 1;
-	vars.ox = vars.width / 2;
-	vars.oy = vars.height / 2;
+	vars.mcoor.x = vars.width / 2;
+	vars.mcoor.y = vars.height / 2;
 	vars.julia = NULL;
 
 	vars.mlx = mlx_init();
@@ -47,7 +46,7 @@ int event_loop(int n)
 	coor.x = 0;
 	coor.y = 0;
 	
-	vars.julia = &coor;
+	//vars.julia = &coor;
 	n++;
 	mlx_loop(vars.mlx);
 	return 0;

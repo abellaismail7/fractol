@@ -27,8 +27,8 @@ typedef struct	s_vars {
 	double 	zoom;
 	int 	iters;
 	t_coor * julia;
-	int ox;
-	int oy;
+	t_coor mcoor;
+	t_coor zcoor;
 	
 }				t_vars;
 
