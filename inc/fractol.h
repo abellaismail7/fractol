@@ -13,38 +13,56 @@
 #ifndef FRACTOL_H
 # define FRACTOL_H
 
+typedef enum s_keys {
+	UP_ARROW = 125,
+	DOWN_ARROW = 126,
+	LEFT_ARROW = 123,
+	RIGHT_ARROW= 124,
+	N_KEY = 45,
+	M_KEY = 46,
+	I_KEY = 34,
+	O_KEY = 31,
+	C_KEY = 8,
+	A_KEY = 0,
+}	t_keys;
+
 typedef struct s_coor
 {
-	int x;
-	int y;
-} t_coor;
+	int	x;
+	int	y;
+}	t_coor;
 
-typedef struct	s_vars {
+typedef struct s_vars {
 	void	*mlx;
 	void	*win;
 	int		height;
 	int		width;
-	double 	zoom;
-	int 	iters;
-	t_coor * julia;
-	t_coor mcoor;
-	t_coor zcoor;
-	
-}				t_vars;
+	double	zoom;
+	int		iters;
+	int		anim;
+	int		hue;
+	t_coor	*julia;
+	t_coor	mcoor;
+	t_coor	zcoor;
+}	t_vars;
 
-typedef struct	s_data {
+typedef struct s_data {
 	void	*img;
 	char	*addr;
 	int		bits_per_pixel;
 	int		line_length;
 	int		endian;
-}				t_data;
+}	t_data;
 
-int redraw( t_vars *vars);
-int keyevent(int key, t_vars *vars);
-int mouse_event(int button,int x, int y, t_vars *data);
-double map (double n, double f1, double t1, double f2, double t2);
-int motion_event(int x, int y, t_vars *vars);
-int hslToRgb(double h, double s, double l);
+int		redraw( t_vars *vars);
+int		keyevent(int key, t_vars *vars);
+int		mouse_event(int button, int x, int y, t_vars *data);
+double	map(double n, double f1, double t1, double f2, double t2);
+int		motion_event(int x, int y, t_vars *vars);
+int		hslToRgb(double h, double s, double l);
+void	register_events(t_vars *vars);
+void	reset_vars(t_vars *vars);
+int		destroy_win(t_vars *vars);
+int		ft_atoi(char *str, int *res);
 
 #endif

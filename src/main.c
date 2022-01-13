@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: iait-bel <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/01/13 18:56:39 by iait-bel          #+#    #+#             */
+/*   Updated: 2022/01/13 18:56:39 by iait-bel         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <math.h>
 #include "mlx.h"
 #include "fractol.h"
@@ -5,66 +17,64 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-void ft_putstr(char *str)
+void	ft_putstr(char *str)
 {
-	int i;
+	int	i;
 
 	i = 0;
-	while(str[i])
+	while (str[i])
 		i++;
 	write(1, str, i);
 }
 
-int destroy_win(t_vars *vars)
+void	pick_fract(t_vars *vars, int fract)
 {
-	mlx_destroy_window(vars->mlx,vars->win);
-	exit(0);
+	if (fract != 2)
+		vars->julia = NULL;
 }
 
-int event_loop(int n)
+int	event_loop(int n, t_coor *coor)
 {
-	t_vars vars;
+	t_vars	vars;
 
-	vars.width 	= 500;
-	vars.height = 500;
-	vars.iters 	= 200;
-	vars.zoom = 1;
-	vars.mcoor.x = vars.width / 2;
-	vars.mcoor.y = vars.height / 2;
-	vars.julia = NULL;
-
+	reset_vars(&vars);
 	vars.mlx = mlx_init();
 	vars.win = mlx_new_window(vars.mlx, vars.height, vars.width, "test");
-	mlx_mouse_hook(vars.win, mouse_event, &vars);
-	mlx_hook(vars.win, 6, 1, motion_event, &vars);
-	mlx_key_hook(vars.win, keyevent, &vars);
-	mlx_hook(vars.win, 17, 0, destroy_win, &vars);
-
-	mlx_hook(vars.win, 12, 1, redraw, &vars);
-	mlx_hook(vars.win, 13, 1, redraw, &vars);
-	t_coor coor;
-	coor.x = 0;
-	coor.y = 0;
-	
-	//vars.julia = &coor;
-	n++;
+	register_events(&vars);
+	vars.julia = coor;
+	pick_fract(&vars, n);
 	mlx_loop(vars.mlx);
-	return 0;
+	return (0);
 }
 
-int main (int ac, char **av)
+int	read_params(char **av, t_coor *coor, int *n)
 {
-	if (ac < 2)
+	coor->x = 0;
+	coor->y = 0;
+	if (!ft_atoi(av[1], n) || *n < 1 || *n > 3)
+		return (0);
+	if (av[2])
 	{
-		ft_putstr("1. Manlderbolt\n");
-		ft_putstr("2. Julia\n");
-		ft_putstr("3. Mine\n");
+		if (!av[3] || *n != 2
+			|| !ft_atoi(av[2], &coor->x) || !ft_atoi(av[3], &coor->y))
+			return (0);
 	}
-	else {
-		int n = av[1][1] - '0';
-		event_loop(n);
-	}
+	return (1);
+}
 
-	//mlx_destroy_display(mlx);
-	return 0;
+int	main(int ac, char **av)
+{
+	int		n;
+	t_coor	coor;
+
+	if (ac > 1 && read_params(av, &coor, &n))
+	{
+		event_loop(n, &coor);
+		return (0);
+	}
+	ft_putstr("Usage: fractol {1|2 [xcoordinate ycoordinate]|3}\n\n");
+	ft_putstr("1. Manlderbolt\n");
+	ft_putstr("2. Julia\n");
+	ft_putstr("3. Mine\n");
+	return (1);
 }

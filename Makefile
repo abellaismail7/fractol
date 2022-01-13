@@ -1,7 +1,7 @@
 CC 		= gcc
 INCLUDE = -I./inc -I/usr/local/include/
 
-CCFLAGS = -Wall -Werror -Wextra
+CCFLAGS = -Wall -Werror -Wextra -g
 ECFLAGS = $(CCFLAGS)
 UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S),Linux)
@@ -12,7 +12,7 @@ ifeq ($(UNAME_S),Darwin)
 endif
 ECFLAGS += -lm -lmlx
 
-FILES 	= main event drw map colors
+FILES 	= main event drw map colors util
 S_DIR	= src
 B_DIR	= build
 SRC		= $(addprefix $(S_DIR)/, 	$(FILES:=.c))

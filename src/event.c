@@ -15,65 +15,78 @@
 #include <mlx.h>
 #include <stdlib.h>
 
-double factor = .02;
+double factor = .1;
 
-void zoom_out(t_vars *vars)
+void	zoom_out(t_vars *vars)
 {
-	vars->zcoor.x -= map(vars->mcoor.x, 0, vars->height, -9, 9) * vars->zoom;
-	vars->zcoor.y -= map(vars->mcoor.y, 0, vars->height, -9, 9) * vars->zoom;
+	vars++;
 }
 
-void zoom_in(t_vars *vars)
+void	zoom_in(t_vars *vars)
 {
-	double half;
+	double	w;
 
-	half = vars->height * factor *  vars->zoom ;
-	vars->zcoor.x += map(vars->mcoor.x, 0, vars->height, -half, half);
-	vars->zcoor.y += map(vars->mcoor.y, 0, vars->height, -half, half);
+	w = 0.5;
+	vars->zcoor.x += map(vars->mcoor.x, 0, vars->width, -w, w) * 20 * vars->zoom;
+	vars->zcoor.y += map(vars->mcoor.y, 0, vars->width, -w, w) * 20 * vars->zoom;
+	printf("%f\n",map(vars->mcoor.x, 0, vars->width,  -w * vars->zoom, w * vars->zoom));
 }
 
-int keyevent(int key, t_vars *vars)
+int	keyevent(int key, t_vars *vars)
 {
 	printf("key pressed: %d", key);
 	fflush(stdout);
-	if (key == 123)
-		vars->mcoor.x -= 5;
-	if (key ==  124)
-		vars->mcoor.x += 5;
-	if (key ==  125)
-		vars->mcoor.y += 5;
-	if (key ==  126)
-		vars->mcoor.y -= 5;
+	if (key == A_KEY)
+		vars->anim = !vars->anim;
+	else if (key == C_KEY)
+	{
+		if (vars->hue == 300)
+			vars->hue = 10;
+		else
+			vars->hue += 10;
+	}
+	else if (key == LEFT_ARROW)
+		vars->zcoor.x -= 25;
+	else if (key == RIGHT_ARROW)
+		vars->zcoor.x += 25;
+	else if (key == UP_ARROW)
+		vars->zcoor.y += 25;
+	else if (key == DOWN_ARROW)
+		vars->zcoor.y -= 25;
 
-	if (key == 34)
+	else if (key == I_KEY)
 	{
 		vars->zoom += vars->zoom * .1;
 		zoom_in(vars);
 		mlx_clear_window(vars->mlx, vars->win);
 	}
-	if (key == 31)
+	else if (key == O_KEY)
 	{
 		vars->zoom -= vars->zoom * .1;
 		zoom_out(vars);
-
 		//if (vars->iters > 50)
 		//	vars->iters -= 10;
 		mlx_clear_window(vars->mlx, vars->win);
 	}
-	if (key  == 12 || key == 53)
+
+	else if (key == 12 || key == 53)
 	{
-		mlx_destroy_window(vars->mlx,vars->win);
+		mlx_destroy_window(vars->mlx, vars->win);
 		exit(0);
 	}
-	if (key == 45)
+	else if (key == N_KEY)
+		//factor -= .002;
 		vars->iters -= 10;
-	if (key == 46)
+	else if (key == M_KEY)
+		//factor += .002;
 		vars->iters += 10;
+	else
+		return (0);
 	redraw(vars);
-	return 1;
+	return (1);
 }
 
-int mouse_event(int button,int x, int y, t_vars *vars)
+int	mouse_event(int button, int x, int y, t_vars *vars)
 {
 	if (button == 1)
 	{
@@ -81,43 +94,46 @@ int mouse_event(int button,int x, int y, t_vars *vars)
 		vars->mcoor.y = y;
 		vars->zoom += .05;
 		zoom_in(vars);
+		redraw(vars);
 	}
-	redraw(vars);
 	if (button == 5)
 	{
-		//vars->zoom -= 0.1;
-		//vars->mcoor.x = x;
-		//vars->mcoor.y = y;
-		//zoom_out(vars);
-		////vars->iters += 10;
-		factor += 0.02;
-		printf("%f\n", factor);
+		vars->zoom -= vars->zoom * .1;
+		vars->mcoor.x = x;
+		vars->mcoor.y = y;
+		zoom_out(vars);
 		mlx_clear_window(vars->mlx, vars->win);
 		redraw(vars);
 	}
 	if (button == 4)
 	{
-		//vars->zoom += 0.1;
-		//vars->mcoor.x = x;
-		//vars->mcoor.y = y;
-		//zoom_in(vars);
-		//if (vars->iters > 50)
-		//	vars->iters -= 10;
-		factor -= 0.02;
-		printf("%f\n", factor);
+		vars->zoom += vars->zoom * .1;
+		vars->mcoor.x = x;
+		vars->mcoor.y = y;
+		zoom_in(vars);
 		mlx_clear_window(vars->mlx, vars->win);
 		redraw(vars);
 	}
 	return (1);
 }
 
-int motion_event(int x, int y, t_vars *vars)
+int	motion_event(int x, int y, t_vars *vars)
 {
-	if (vars->julia)
+	if (vars->julia && vars->anim)
 	{
 		vars->julia->x = x;
 		vars->julia->y = y;
 		redraw(vars);
 	}
-	return 1;
+	return (1);
+}
+
+void	register_events(t_vars *vars)
+{
+	mlx_mouse_hook(vars->win, mouse_event, vars);
+	mlx_hook(vars->win, 6, 1, motion_event, vars);
+	mlx_key_hook(vars->win, keyevent, vars);
+	mlx_hook(vars->win, 17, 0, destroy_win, vars);
+	mlx_hook(vars->win, 12, 1, redraw, vars);
+	mlx_hook(vars->win, 13, 1, redraw, vars);
 }

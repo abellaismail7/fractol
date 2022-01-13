@@ -44,8 +44,8 @@ void draw_infos(t_vars *vars)
 
 int get_color(t_vars *vars, int x, int y, double range)
 {
-	double a = map(x + vars->zcoor.x , 0, vars->height * vars->zoom, -range, range);
-	double b = map(y + vars->zcoor.y , 0, vars->width  * vars->zoom, -range, range);
+	double a = map(x + vars->zcoor.x , 0, vars->height , -range, range);
+	double b = map(y + vars->zcoor.y , 0, vars->width  , -range, range);
 	double ca = a;
 	double cb = b;
 	if (vars->julia)
@@ -67,8 +67,8 @@ int get_color(t_vars *vars, int x, int y, double range)
 
 	if (n == vars->iters)
 		return (0);
-	
-	return hslToRgb((30 + round(120 * n * 1.0/ vars->iters))/100, .5,.5);
+
+	return hslToRgb((30 + round(120 * n * 1.0/ vars->iters))/vars->hue, .7, .5);
 	//int color = (int) map(n, 0 , vars->iters, 0XFFFF + 1,0XFFFFFF) + 0XFFFFF  & ~0XFFFF ;
 }
 
@@ -82,7 +82,7 @@ int redraw( t_vars *vars)
 
 	data.img = mlx_new_image(vars->mlx, vars->height, vars->width);
 	data.addr = mlx_get_data_addr(data.img, &data.bits_per_pixel, &data.line_length, &data.endian);
-	range = 2/(vars->zoom);
+	range = 1/(vars->zoom);
 	x = 0;
 	while (x < vars->height)
 	{

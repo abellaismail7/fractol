@@ -1,9 +1,10 @@
 var minval = -0.5;
 var maxval = 0.5;
 
-var xSlider;
-var ySlider;
-var zoomSlider;
+var minxSlider;
+var maxxSlider;
+var minySlider;
+var maxySlider;
 var btn;
 var zoom = 1;
 var cx = 100;
@@ -16,32 +17,22 @@ function setup() {
   
   pixelDensity(1);
 
-  xSlider = createSlider(0, 1, 1, 0.001);
-  ySlider = createSlider(0, 1, 1, 5);
-  zoomSlider = createSlider(0, 2, 1, 0.00001);
+  text("x")
+  minxSlider = createSlider(-2, 2, 2, 0.001);
+
+  maxxSlider = createSlider(-2, 2, 2, 0.001);
+    text("y")
+
+  minySlider = createSlider(-2, 2, 2, 0.001);
+  maxySlider = createSlider(-2, 2, 2, 0.001);
 
 
-  xSlider.size(500, 20);
-  xSlider.changed = (val) =>{
-    console.log("x:" + val);
-  }
-  ySlider.changed = (val) =>{
-    console.log("y:" +val);
-  }
-  ySlider.size(500, 20);
-  zoomSlider.size(500, 20);
-  zoomSlider.changed = (val) =>{
-    console.log("zoom:" + val);
-  }
-  btn = createButton("INC");
-  btn.mouseClicked(incall);
+  minxSlider.size(800, 20);
+  maxxSlider.size(800, 20);
+  minySlider.size(800, 20);
+  maxySlider.size(800, 20);
+ 
   
-  frDiv = createDiv('');
-}
-
-function incall()
-{
-   maxiterations += 100;
 }
 
 function mouseWheel(event) {
@@ -62,11 +53,9 @@ function draw() {
   for (var x = 0; x < width; x++) {
     for (var y = 0; y < height; y++) {
       var min = 2 / zoom;
-      var n = xSlider.value();
-      var  _x = map(cx, 0, width , width * zoom / -2 , width * zoom /2 ) * n;
-      var  _y = map(cy, 0, width , width * zoom / -2, width * zoom /2 );
-      var a = map(_x + x, 0, width  * zoom, -min, min);
-      var b = map(_y + y, 0, height * zoom, -min, min);
+     
+      var a = map( x, 0, width  , minxSlider.value(), maxxSlider.value());
+      var b = map( y, 0, height , minySlider.value(), maxySlider.value());
 
       var ca = a;
       var cb = b;
@@ -102,5 +91,6 @@ function draw() {
   fill(0, 200, 0)
   ellipse(50, 50 , 5);
 }
+
 
 
