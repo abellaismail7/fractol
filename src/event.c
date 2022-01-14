@@ -20,12 +20,7 @@ int	keyevent(int key, t_vars *vars)
 	if (key == A_KEY)
 		vars->anim = !vars->anim;
 	else if (key == C_KEY)
-	{
-		if (vars->hue == 300)
-			vars->hue = 10;
-		else
-			vars->hue += 10;
-	}
+		vars->hue = (vars->hue + 10) % 300;
 	else if (key == LEFT_ARROW)
 		vars->zcoor.x -= 25;
 	else if (key == RIGHT_ARROW)
@@ -34,24 +29,8 @@ int	keyevent(int key, t_vars *vars)
 		vars->zcoor.y += 25;
 	else if (key == DOWN_ARROW)
 		vars->zcoor.y -= 25;
-
-	else if (key == I_KEY)
-	{
-		zoom_in(vars);
-		mlx_clear_window(vars->mlx, vars->win);
-	}
-	else if (key == O_KEY)
-	{
-		vars->zoom -= vars->zoom * .1;
-		zoom_out(vars);
-		mlx_clear_window(vars->mlx, vars->win);
-	}
-
 	else if (key == 12 || key == 53)
-	{
-		mlx_destroy_window(vars->mlx, vars->win);
-		exit(0);
-	}
+		destroy_win(vars);
 	else if (key == N_KEY)
 		vars->iters -= 10;
 	else if (key == M_KEY)
@@ -77,7 +56,6 @@ int	mouse_event(int button, int x, int y, t_vars *vars)
 		vars->mcoor.x = x;
 		vars->mcoor.y = y;
 		zoom_out(vars);
-		mlx_clear_window(vars->mlx, vars->win);
 		redraw(vars);
 	}
 	if (button == 4)
@@ -85,7 +63,6 @@ int	mouse_event(int button, int x, int y, t_vars *vars)
 		vars->mcoor.x = x;
 		vars->mcoor.y = y;
 		zoom_in(vars);
-		mlx_clear_window(vars->mlx, vars->win);
 		redraw(vars);
 	}
 	return (1);

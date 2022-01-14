@@ -33,8 +33,8 @@ typedef struct s_pair {
 
 typedef struct s_coor
 {
-	long x;
-	long y;
+	long	x;
+	long	y;
 }	t_coor;
 
 typedef struct s_vars {
@@ -46,7 +46,7 @@ typedef struct s_vars {
 	int		iters;
 	int		anim;
 	int		hue;
-	int 	burn;
+	int		burn;
 	t_coor	*julia;
 	t_coor	mcoor;
 	t_coor	zcoor;

@@ -22,8 +22,8 @@ int	destroy_win(t_vars *vars)
 
 void	reset_vars(t_vars *vars)
 {
-	vars->width = 500;
-	vars->height = 500;
+	vars->width = 600;
+	vars->height = 600;
 	vars->iters = 200;
 	vars->zoom = 1;
 	vars->mcoor.x = vars->width / 2;

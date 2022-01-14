@@ -25,24 +25,6 @@ void	my_mlx_pixel_put(t_data *data, t_coor coor, int color)
 	*(unsigned int *) dst = color;
 }
 
-void	draw_infos(t_vars *vars, int x, int y)
-{
-	char	str[300];
-
-	sprintf(str, "number of iterations: %d\n", vars->iters);
-	mlx_string_put(vars->mlx, vars->win, 20, 20, 0XFFFFFFFF ,str);
-	sprintf(str, "zoom: %f\n", vars->zoom);
-	mlx_string_put(vars->mlx, vars->win, 320, 20, 0XFFFFFFFF ,str);
-	sprintf(str, "c");
-	mlx_string_put(vars->mlx, vars->win, vars->height / 2, vars->width / 2, 0XFFFFFFFF ,str);
-	sprintf(str, "c1");
-	mlx_string_put(vars->mlx, vars->win, vars->mcoor.x,vars->mcoor.y, 0XFFFFFFFF ,str);
-	sprintf(str, "x:%d", x);
-	mlx_string_put(vars->mlx, vars->win, 20 , 450, 0XFFFFFFFF ,str);
-	sprintf(str, "y:%d", y);
-	mlx_string_put(vars->mlx, vars->win, 220 , 450, 0XFFFFFFFF ,str);
-}
-
 int	iterate(t_vars *vars, t_pair ab, t_pair c_ab)
 {
 	double	a;
@@ -61,7 +43,6 @@ int	iterate(t_vars *vars, t_pair ab, t_pair c_ab)
 			b = fabs(2 * aa * b) + c_ab.b;
 		else
 			b = 2 * aa * b + c_ab.b;
-
 		if (a * a + b * b > 4)
 			break ;
 		n++;
@@ -122,6 +103,5 @@ int	redraw(t_vars *vars)
 		coor.x++;
 	}
 	mlx_put_image_to_window(vars->mlx, vars->win, data.img, 0, 0);
-	draw_infos(vars, vars->zcoor.x, vars->zcoor.y);
 	return (1);
 }

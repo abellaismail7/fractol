@@ -1,15 +1,10 @@
 CC 		= gcc
 INCLUDE = -I./inc -I/usr/local/include/
 
-CCFLAGS = -Wall -Werror -Wextra -g
+CCFLAGS = -Wall -Werror -Wextra
 ECFLAGS = $(CCFLAGS)
 UNAME_S := $(shell uname -s)
-ifeq ($(UNAME_S),Linux)
-	ECFLAGS +=  -lX11 -lXext
-endif
-ifeq ($(UNAME_S),Darwin)
-	ECFLAGS +=  -framework OpenGL -framework AppKit
-endif
+ECFLAGS +=  -framework OpenGL -framework AppKit
 ECFLAGS += -lm -lmlx
 
 FILES 	= main event drw map colors util util_extra
@@ -27,11 +22,7 @@ $(EXE): $(OBJ)
 
 $(B_DIR)/%.o: $(S_DIR)/%.c inc/fractol.h
 	mkdir -p $(@D)
-	$(CC) $(CCFLAGS) -I mlx $(INCLUDE) -o $@ -c $<
-
-debug: CCFLAGS += -g
-debug: fclean all
-bonus: all
+	$(CC) $(CCFLAGS) $(INCLUDE) -o $@ -c $<
 
 clean:
 	rm -f $(OBJ)
@@ -40,4 +31,6 @@ clean:
 fclean: clean
 	rm -f $(EXE)
 
-.PHONY: all clean fclean
+re: fclean all
+
+.PHONY: all clean fclean re

@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "fractol.h"
+#define ZOOM_RANGE 50
 
 void	zoom_out(t_vars *vars)
 {
@@ -18,8 +19,8 @@ void	zoom_out(t_vars *vars)
 	t_pair	p;
 	t_pair	mp;
 
-	mp.b = 40;
-	mp.a = -mp.b;
+	mp.b = ZOOM_RANGE;
+	mp.a = -ZOOM_RANGE;
 	oldzw = vars->width * vars->zoom;
 	vars->zoom -= vars->zoom * .1;
 	p.a = 0;
@@ -36,8 +37,8 @@ void	zoom_in(t_vars *vars)
 	t_pair	p;
 	t_pair	mp;
 
-	mp.b = 40;
-	mp.a = -mp.b;
+	mp.b = ZOOM_RANGE;
+	mp.a = -ZOOM_RANGE;
 	oldzw = vars->width * vars->zoom;
 	vars->zoom += vars->zoom * .1;
 	p.a = 0;
