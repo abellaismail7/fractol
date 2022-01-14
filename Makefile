@@ -12,7 +12,7 @@ ifeq ($(UNAME_S),Darwin)
 endif
 ECFLAGS += -lm -lmlx
 
-FILES 	= main event drw map colors util
+FILES 	= main event drw map colors util util_extra
 S_DIR	= src
 B_DIR	= build
 SRC		= $(addprefix $(S_DIR)/, 	$(FILES:=.c))

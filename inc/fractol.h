@@ -26,10 +26,15 @@ typedef enum s_keys {
 	A_KEY = 0,
 }	t_keys;
 
+typedef struct s_pair {
+	double	a;
+	double	b;
+}	t_pair;
+
 typedef struct s_coor
 {
-	int	x;
-	int	y;
+	long x;
+	long y;
 }	t_coor;
 
 typedef struct s_vars {
@@ -41,6 +46,7 @@ typedef struct s_vars {
 	int		iters;
 	int		anim;
 	int		hue;
+	int 	burn;
 	t_coor	*julia;
 	t_coor	mcoor;
 	t_coor	zcoor;
@@ -57,12 +63,14 @@ typedef struct s_data {
 int		redraw( t_vars *vars);
 int		keyevent(int key, t_vars *vars);
 int		mouse_event(int button, int x, int y, t_vars *data);
-double	map(double n, double f1, double t1, double f2, double t2);
+double	map(double n, double f1, double t1, t_pair p);
 int		motion_event(int x, int y, t_vars *vars);
-int		hslToRgb(double h, double s, double l);
+int		hsl2rgb(double h, double s, double l);
 void	register_events(t_vars *vars);
 void	reset_vars(t_vars *vars);
 int		destroy_win(t_vars *vars);
-int		ft_atoi(char *str, int *res);
+int		ft_atoi(char *str, long *res);
+void	zoom_in(t_vars *vars);
+void	zoom_out(t_vars *vars);
 
 #endif

@@ -35,7 +35,7 @@ void	reset_vars(t_vars *vars)
 	vars->hue = 30;
 }
 
-int	ft_atoi(char *str, int *res)
+int	ft_atoi(char *str, long *res)
 {
 	int	sign;
 

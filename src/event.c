@@ -15,27 +15,8 @@
 #include <mlx.h>
 #include <stdlib.h>
 
-double factor = .1;
-
-void	zoom_out(t_vars *vars)
-{
-	vars++;
-}
-
-void	zoom_in(t_vars *vars)
-{
-	double	w;
-
-	w = 0.5;
-	vars->zcoor.x += map(vars->mcoor.x, 0, vars->width, -w, w) * 20 * vars->zoom;
-	vars->zcoor.y += map(vars->mcoor.y, 0, vars->width, -w, w) * 20 * vars->zoom;
-	printf("%f\n",map(vars->mcoor.x, 0, vars->width,  -w * vars->zoom, w * vars->zoom));
-}
-
 int	keyevent(int key, t_vars *vars)
 {
-	printf("key pressed: %d", key);
-	fflush(stdout);
 	if (key == A_KEY)
 		vars->anim = !vars->anim;
 	else if (key == C_KEY)
@@ -56,7 +37,6 @@ int	keyevent(int key, t_vars *vars)
 
 	else if (key == I_KEY)
 	{
-		vars->zoom += vars->zoom * .1;
 		zoom_in(vars);
 		mlx_clear_window(vars->mlx, vars->win);
 	}
@@ -64,8 +44,6 @@ int	keyevent(int key, t_vars *vars)
 	{
 		vars->zoom -= vars->zoom * .1;
 		zoom_out(vars);
-		//if (vars->iters > 50)
-		//	vars->iters -= 10;
 		mlx_clear_window(vars->mlx, vars->win);
 	}
 
@@ -75,10 +53,8 @@ int	keyevent(int key, t_vars *vars)
 		exit(0);
 	}
 	else if (key == N_KEY)
-		//factor -= .002;
 		vars->iters -= 10;
 	else if (key == M_KEY)
-		//factor += .002;
 		vars->iters += 10;
 	else
 		return (0);
@@ -92,13 +68,12 @@ int	mouse_event(int button, int x, int y, t_vars *vars)
 	{
 		vars->mcoor.x = x;
 		vars->mcoor.y = y;
-		vars->zoom += .05;
+		vars->zoom += .01;
 		zoom_in(vars);
 		redraw(vars);
 	}
 	if (button == 5)
 	{
-		vars->zoom -= vars->zoom * .1;
 		vars->mcoor.x = x;
 		vars->mcoor.y = y;
 		zoom_out(vars);
@@ -107,7 +82,6 @@ int	mouse_event(int button, int x, int y, t_vars *vars)
 	}
 	if (button == 4)
 	{
-		vars->zoom += vars->zoom * .1;
 		vars->mcoor.x = x;
 		vars->mcoor.y = y;
 		zoom_in(vars);

@@ -14,20 +14,21 @@
 #include "mlx.h"
 #include <stdio.h>
 #include <math.h>
+#include <stdlib.h>
 
-void	my_mlx_pixel_put(t_data *data, int x, int y, int color)
+void	my_mlx_pixel_put(t_data *data, t_coor coor, int color)
 {
 	char	*dst;
 
-	dst = data->addr + (y * data->line_length + x * (data->bits_per_pixel / 8));
-	*(unsigned int*)dst = color;
+	dst = data->addr
+		+ (coor.y * data->line_length + coor.x * (data->bits_per_pixel / 8));
+	*(unsigned int *) dst = color;
 }
 
-#include <stdlib.h>
-void draw_infos(t_vars *vars)
+void	draw_infos(t_vars *vars, int x, int y)
 {
-	char str[300];
-	
+	char	str[300];
+
 	sprintf(str, "number of iterations: %d\n", vars->iters);
 	mlx_string_put(vars->mlx, vars->win, 20, 20, 0XFFFFFFFF ,str);
 	sprintf(str, "zoom: %f\n", vars->zoom);
@@ -36,67 +37,91 @@ void draw_infos(t_vars *vars)
 	mlx_string_put(vars->mlx, vars->win, vars->height / 2, vars->width / 2, 0XFFFFFFFF ,str);
 	sprintf(str, "c1");
 	mlx_string_put(vars->mlx, vars->win, vars->mcoor.x,vars->mcoor.y, 0XFFFFFFFF ,str);
-	sprintf(str, "x:%d", vars->mcoor.x);
+	sprintf(str, "x:%d", x);
 	mlx_string_put(vars->mlx, vars->win, 20 , 450, 0XFFFFFFFF ,str);
-	sprintf(str, "y:%d", vars->mcoor.y);
+	sprintf(str, "y:%d", y);
 	mlx_string_put(vars->mlx, vars->win, 220 , 450, 0XFFFFFFFF ,str);
 }
 
-int get_color(t_vars *vars, int x, int y, double range)
+int	iterate(t_vars *vars, t_pair ab, t_pair c_ab)
 {
-	double a = map(x + vars->zcoor.x , 0, vars->height , -range, range);
-	double b = map(y + vars->zcoor.y , 0, vars->width  , -range, range);
-	double ca = a;
-	double cb = b;
-	if (vars->julia)
-	{
-		ca = map(vars->julia->x, 0, vars->width, -.6, .4);
-		cb = map(vars->julia->y, 0, vars->width, -.6, .4);
-	}
-	int n = 0;
+	double	a;
+	double	b;
+	double	aa;
+	int		n;
+
+	n = 0;
+	a = ab.a;
+	b = ab.b;
 	while (n < vars->iters)
 	{
-		double aa =  a;	
+		aa = a;
+		a = a * a - b * b + c_ab.a;
+		if (vars->burn)
+			b = fabs(2 * aa * b) + c_ab.b;
+		else
+			b = 2 * aa * b + c_ab.b;
 
-		a = a*a - b*b + ca;
-		b = 2*aa*b + cb;
 		if (a * a + b * b > 4)
-			break;
+			break ;
 		n++;
 	}
-
-	if (n == vars->iters)
-		return (0);
-
-	return hslToRgb((30 + round(120 * n * 1.0/ vars->iters))/vars->hue, .7, .5);
-	//int color = (int) map(n, 0 , vars->iters, 0XFFFF + 1,0XFFFFFF) + 0XFFFFF  & ~0XFFFF ;
+	return (n);
 }
 
-int redraw( t_vars *vars)
+int	get_color(t_vars *vars, t_coor coor, double range)
+{
+	t_pair	ab;
+	t_pair	c;
+	int		n;
+	t_pair	pr;
+
+	pr.a = -range;
+	pr.b = range;
+	ab.a = map(coor.x + vars->zcoor.x, 0, vars->height, pr);
+	ab.b = map(coor.y + vars->zcoor.y, 0, vars->width, pr);
+	c.a = ab.a;
+	c.b = ab.b;
+	if (vars->julia)
+	{
+		pr.a = -.6;
+		pr.b = .4;
+		c.a = map(vars->julia->x, 0, vars->width, pr);
+		c.b = map(vars->julia->y, 0, vars->width, pr);
+	}
+	n = iterate(vars, ab, c);
+	if (n == vars->iters)
+		return (0);
+	return (
+		hsl2rgb(
+			(30 + round(120 * n * 1.0 / vars->iters))
+			/ vars->hue, .7, .5));
+}
+
+int	redraw(t_vars *vars)
 {
 	t_data	data;
-	int		x;
-	int		y;
+	t_coor	coor;
 	int		color;
 	double	range;
 
 	data.img = mlx_new_image(vars->mlx, vars->height, vars->width);
-	data.addr = mlx_get_data_addr(data.img, &data.bits_per_pixel, &data.line_length, &data.endian);
-	range = 1/(vars->zoom);
-	x = 0;
-	while (x < vars->height)
+	data.addr = mlx_get_data_addr
+		(data.img, &data.bits_per_pixel, &data.line_length, &data.endian);
+	range = 2 / (vars->zoom);
+	coor.x = 0;
+	while (coor.x < vars->height)
 	{
-		y = 0;
-		while (y < vars->width)
+		coor.y = 0;
+		while (coor.y < vars->width)
 		{
-			color = get_color(vars, x, y, range);
-			my_mlx_pixel_put(&data, x, y, color);
-			y++;
+			color = get_color(vars, coor, range);
+			my_mlx_pixel_put(&data, coor, color);
+			coor.y++;
 		}
-		x++;
+		coor.x++;
 	}
 	mlx_put_image_to_window(vars->mlx, vars->win, data.img, 0, 0);
-	draw_infos(vars);
+	draw_infos(vars, vars->zcoor.x, vars->zcoor.y);
 	return (1);
 }
-

@@ -1,15 +1,19 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   map.c                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: iait-bel <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/01/14 11:20:02 by iait-bel          #+#    #+#             */
+/*   Updated: 2022/01/14 11:20:02 by iait-bel         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-//0 => 100
-//50 => 250
-//0 => 50
-//0 => 0
+#include "fractol.h"
 #include <math.h>
-double map (double n, double f1, double t1, double f2, double t2)
+
+double	map(double n, double f1, double t1, t_pair p)
 {
-	double def1 = t1 - f1;
-	double def2 = t2 - f2;
-	double mv = def2 / def1;
-
-	return f2 + (n - f1) * mv;
+	return (p.a + (n - f1) * ((p.b - p.a) / (t1 - f1)));
 }
-

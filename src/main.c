@@ -31,6 +31,8 @@ void	pick_fract(t_vars *vars, int fract)
 {
 	if (fract != 2)
 		vars->julia = NULL;
+	if (fract != 3)
+		vars->burn = 0;
 }
 
 int	event_loop(int n, t_coor *coor)
@@ -42,12 +44,13 @@ int	event_loop(int n, t_coor *coor)
 	vars.win = mlx_new_window(vars.mlx, vars.height, vars.width, "test");
 	register_events(&vars);
 	vars.julia = coor;
+	vars.burn = 1;
 	pick_fract(&vars, n);
 	mlx_loop(vars.mlx);
 	return (0);
 }
 
-int	read_params(char **av, t_coor *coor, int *n)
+int	read_params(char **av, t_coor *coor, long *n)
 {
 	coor->x = 0;
 	coor->y = 0;
@@ -64,7 +67,7 @@ int	read_params(char **av, t_coor *coor, int *n)
 
 int	main(int ac, char **av)
 {
-	int		n;
+	long	n;
 	t_coor	coor;
 
 	if (ac > 1 && read_params(av, &coor, &n))
