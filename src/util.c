@@ -10,12 +10,14 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <errno.h>
 #include <stdlib.h>
 #include <mlx.h>
 #include "fractol.h"
 
 int	destroy_win(t_vars *vars)
 {
+	mlx_destroy_image(vars->mlx, vars->data.img);
 	mlx_destroy_window(vars->mlx, vars->win);
 	exit(0);
 }
@@ -26,13 +28,24 @@ void	reset_vars(t_vars *vars)
 	vars->height = 600;
 	vars->iters = 200;
 	vars->zoom = 1;
-	vars->mcoor.x = vars->width / 2;
-	vars->mcoor.y = vars->height / 2;
+	vars->mcoor.x = 0;
+	vars->mcoor.y = 0;
 	vars->zcoor.x = 0;
 	vars->zcoor.y = 0;
 	vars->julia = NULL;
+	vars->burn = 1;
 	vars->anim = 0;
 	vars->hue = 30;
+}
+
+void	alloc_image(t_vars *vars)
+{
+	vars->data.img = mlx_new_image(vars->mlx, vars->height, vars->width);
+	vars->data.addr = mlx_get_data_addr(
+			vars->data.img,
+			&vars->data.bits_per_pixel,
+			&vars->data.line_length,
+			&vars->data.endian);
 }
 
 int	ft_atoi(char *str, long *res)

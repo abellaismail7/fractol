@@ -16,6 +16,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <errno.h>
 
 void	ft_putstr(char *str)
 {
@@ -35,25 +36,26 @@ void	pick_fract(t_vars *vars, int fract)
 		vars->burn = 0;
 }
 
-int	event_loop(int n, t_coor *coor)
+void	event_loop(int n, t_coor *coor)
 {
 	t_vars	vars;
 
 	reset_vars(&vars);
 	vars.mlx = mlx_init();
-	vars.win = mlx_new_window(vars.mlx, vars.height, vars.width, "test");
-	register_events(&vars);
+	vars.win = mlx_new_window(vars.mlx, vars.height, vars.width, "Fract-ol");
 	vars.julia = coor;
-	vars.burn = 1;
+	alloc_image(&vars);
+	register_events(&vars);
 	pick_fract(&vars, n);
 	mlx_loop(vars.mlx);
-	return (0);
+	destroy_win(&vars);
 }
 
 int	read_params(char **av, t_coor *coor, long *n)
 {
 	coor->x = 0;
 	coor->y = 0;
+	errno = EINVAL;
 	if (!ft_atoi(av[1], n) || *n < 1 || *n > 3)
 		return (0);
 	if (av[2])
@@ -62,6 +64,7 @@ int	read_params(char **av, t_coor *coor, long *n)
 			|| !ft_atoi(av[2], &coor->x) || !ft_atoi(av[3], &coor->y))
 			return (0);
 	}
+	errno = 0;
 	return (1);
 }
 
@@ -70,11 +73,14 @@ int	main(int ac, char **av)
 	long	n;
 	t_coor	coor;
 
+	errno = 0;
 	if (ac > 1 && read_params(av, &coor, &n))
 	{
 		event_loop(n, &coor);
 		return (0);
 	}
+	if (errno != 0)
+		perror("fractol: ");
 	ft_putstr("Usage: fractol {1|2 [xcoordinate ycoordinate]|3}\n\n");
 	ft_putstr("1. Manlderbolt\n");
 	ft_putstr("2. Julia\n");

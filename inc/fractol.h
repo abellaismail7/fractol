@@ -13,19 +13,6 @@
 #ifndef FRACTOL_H
 # define FRACTOL_H
 
-typedef enum s_keys {
-	UP_ARROW = 125,
-	DOWN_ARROW = 126,
-	LEFT_ARROW = 123,
-	RIGHT_ARROW= 124,
-	N_KEY = 45,
-	M_KEY = 46,
-	I_KEY = 34,
-	O_KEY = 31,
-	C_KEY = 8,
-	A_KEY = 0,
-}	t_keys;
-
 typedef struct s_pair {
 	double	a;
 	double	b;
@@ -37,6 +24,14 @@ typedef struct s_coor
 	long	y;
 }	t_coor;
 
+typedef struct s_data {
+	void	*img;
+	char	*addr;
+	int		bits_per_pixel;
+	int		line_length;
+	int		endian;
+}	t_data;
+
 typedef struct s_vars {
 	void	*mlx;
 	void	*win;
@@ -47,18 +42,11 @@ typedef struct s_vars {
 	int		anim;
 	int		hue;
 	int		burn;
+	t_data	data;
 	t_coor	*julia;
 	t_coor	mcoor;
 	t_coor	zcoor;
 }	t_vars;
-
-typedef struct s_data {
-	void	*img;
-	char	*addr;
-	int		bits_per_pixel;
-	int		line_length;
-	int		endian;
-}	t_data;
 
 int		redraw( t_vars *vars);
 int		keyevent(int key, t_vars *vars);
@@ -72,5 +60,6 @@ int		destroy_win(t_vars *vars);
 int		ft_atoi(char *str, long *res);
 void	zoom_in(t_vars *vars);
 void	zoom_out(t_vars *vars);
+void	alloc_image(t_vars *vars);
 
 #endif

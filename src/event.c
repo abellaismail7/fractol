@@ -10,12 +10,13 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "fractol.h"
 #include <stdio.h>
 #include <mlx.h>
 #include <stdlib.h>
+#include "fractol.h"
+#include "mlx_com.h"
 
-int	keyevent(int key, t_vars *vars)
+int	key_event(int key, t_vars *vars)
 {
 	if (key == A_KEY)
 		vars->anim = !vars->anim;
@@ -29,7 +30,7 @@ int	keyevent(int key, t_vars *vars)
 		vars->zcoor.y += 25;
 	else if (key == DOWN_ARROW)
 		vars->zcoor.y -= 25;
-	else if (key == 12 || key == 53)
+	else if (key == Q_KEY || key == ESC_KEY)
 		destroy_win(vars);
 	else if (key == N_KEY)
 		vars->iters -= 10;
@@ -43,22 +44,21 @@ int	keyevent(int key, t_vars *vars)
 
 int	mouse_event(int button, int x, int y, t_vars *vars)
 {
-	if (button == 1)
+	if (button == CLICK_KEY)
 	{
 		vars->mcoor.x = x;
 		vars->mcoor.y = y;
-		vars->zoom += .01;
 		zoom_in(vars);
 		redraw(vars);
 	}
-	if (button == 5)
+	if (button == MOUSE_SCROLL_UP)
 	{
 		vars->mcoor.x = x;
 		vars->mcoor.y = y;
 		zoom_out(vars);
 		redraw(vars);
 	}
-	if (button == 4)
+	if (button == MOUSE_SCROLL_DOWN)
 	{
 		vars->mcoor.x = x;
 		vars->mcoor.y = y;
@@ -82,9 +82,9 @@ int	motion_event(int x, int y, t_vars *vars)
 void	register_events(t_vars *vars)
 {
 	mlx_mouse_hook(vars->win, mouse_event, vars);
-	mlx_hook(vars->win, 6, 1, motion_event, vars);
-	mlx_key_hook(vars->win, keyevent, vars);
-	mlx_hook(vars->win, 17, 0, destroy_win, vars);
-	mlx_hook(vars->win, 12, 1, redraw, vars);
-	mlx_hook(vars->win, 13, 1, redraw, vars);
+	mlx_key_hook(vars->win, key_event, vars);
+	mlx_hook(vars->win, MOUSE_MOTION_EVENT, 1, motion_event, vars);
+	mlx_hook(vars->win, DESTROY_NOTIFY_EVENT, 0, destroy_win, vars);
+	mlx_hook(vars->win, EXPOSE_EVENT, 1, redraw, vars);
+	mlx_hook(vars->win, GRAPHICS_EXPOSE_EVENT, 1, redraw, vars);
 }

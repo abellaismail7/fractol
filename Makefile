@@ -7,7 +7,7 @@ UNAME_S := $(shell uname -s)
 ECFLAGS +=  -framework OpenGL -framework AppKit
 ECFLAGS += -lm -lmlx
 
-FILES 	= main event drw map colors util util_extra
+FILES 	= main event drw colors util util_extra
 S_DIR	= src
 B_DIR	= build
 SRC		= $(addprefix $(S_DIR)/, 	$(FILES:=.c))

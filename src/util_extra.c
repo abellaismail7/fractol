@@ -13,6 +13,11 @@
 #include "fractol.h"
 #define ZOOM_RANGE 50
 
+double	map(double n, double f1, double t1, t_pair p)
+{
+	return (p.a + (n - f1) * ((p.b - p.a) / (t1 - f1)));
+}
+
 void	zoom_out(t_vars *vars)
 {
 	double	oldzw;

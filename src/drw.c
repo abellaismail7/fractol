@@ -29,7 +29,7 @@ int	iterate(t_vars *vars, t_pair ab, t_pair c_ab)
 {
 	double	a;
 	double	b;
-	double	aa;
+	double	tmp;
 	int		n;
 
 	n = 0;
@@ -37,12 +37,12 @@ int	iterate(t_vars *vars, t_pair ab, t_pair c_ab)
 	b = ab.b;
 	while (n < vars->iters)
 	{
-		aa = a;
-		a = a * a - b * b + c_ab.a;
+		tmp = a * a - b * b + c_ab.a;
 		if (vars->burn)
-			b = fabs(2 * aa * b) + c_ab.b;
+			b = fabs(2 * a * b) + c_ab.b;
 		else
-			b = 2 * aa * b + c_ab.b;
+			b = 2 * a * b + c_ab.b;
+		a = tmp;
 		if (a * a + b * b > 4)
 			break ;
 		n++;
@@ -81,14 +81,10 @@ int	get_color(t_vars *vars, t_coor coor, double range)
 
 int	redraw(t_vars *vars)
 {
-	t_data	data;
 	t_coor	coor;
 	int		color;
 	double	range;
 
-	data.img = mlx_new_image(vars->mlx, vars->height, vars->width);
-	data.addr = mlx_get_data_addr
-		(data.img, &data.bits_per_pixel, &data.line_length, &data.endian);
 	range = 2 / (vars->zoom);
 	coor.x = 0;
 	while (coor.x < vars->height)
@@ -97,11 +93,11 @@ int	redraw(t_vars *vars)
 		while (coor.y < vars->width)
 		{
 			color = get_color(vars, coor, range);
-			my_mlx_pixel_put(&data, coor, color);
+			my_mlx_pixel_put(&vars->data, coor, color);
 			coor.y++;
 		}
 		coor.x++;
 	}
-	mlx_put_image_to_window(vars->mlx, vars->win, data.img, 0, 0);
+	mlx_put_image_to_window(vars->mlx, vars->win, vars->data.img, 0, 0);
 	return (1);
 }
